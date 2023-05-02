@@ -2,8 +2,13 @@
 
 {% block content %}
 
-    Hello world
-
+    Our rooms: 
+    <br>
+    {% for room in room_list %}
+        {{room.name}}
+        <br>
+        {{room.capacity}}
+    {% endfor %}
 {% endblock %}
 
 
