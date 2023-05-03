@@ -13,7 +13,7 @@ class Room(models.Model):
         return self.name
     
 class Reservation(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     date = models.DateField()
     start_time = models.TimeField()
     end_time = models.TimeField()

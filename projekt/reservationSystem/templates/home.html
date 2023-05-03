@@ -5,9 +5,23 @@
     Our rooms: 
     <br>
     {% for room in room_list %}
-        {{room.name}}
-        <br>
-        {{room.capacity}}
+    <div class="card" style="width: 18rem;">
+        <img src="..." class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">{{room.name}}</h5>
+          <p class="card-text">{{room.description}}</p>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Max ilość osób: {{room.capacity}}</li>
+          <li class="list-group-item">Projektor: {% if room.projector %}Dostępne{% else %}Brak{% endif %}</li>
+          <li class="list-group-item">Wifi: {% if room.projector %}Dostępne{% else %}Niedostępne{% endif %}</li>
+        </ul>
+        {{room.id}}
+        <div class="card-body">
+          <a href="{% url 'room' room.id %}" class="card-link">Card link</a>
+          <a href="#" class="card-link">Another link</a>
+        </div>
+      </div>
     {% endfor %}
 {% endblock %}
 
