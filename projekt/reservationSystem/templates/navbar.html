@@ -9,7 +9,22 @@
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="{% url 'AddReservation' %}">AddReservation</a>
           </li>
-          <li class="nav-item">
+          {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page">{{user.username}}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{% url 'logout' %}">Wyloguj</a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{% url 'login' %}">Zaloguj</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{% url 'register' %}">Zarejestruj</a>
+            </li>
+          {% endif %}
+          <!-- <li class="nav-item">
             <a class="nav-link" href="#">Link</a>
           </li>
           <li class="nav-item dropdown">
@@ -22,7 +37,7 @@
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" href="#">Something else here</a></li>
             </ul>
-          </li>
+          </li> -->
         </ul>
         <!-- <form class="d-flex">
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">

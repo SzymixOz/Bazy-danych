@@ -1,6 +1,33 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <form method="GET" action="">
+      <label for="min_capacity">Minimalna liczba osób:</label>
+      <input type="number" id="min_capacity" name="min_capacity" />
+  
+      <label for="max_capacity">Maksymalna liczba osób:</label>
+      <input type="number" id="max_capacity" name="max_capacity" />
+  
+      <label for="wifi">WiFi:</label>
+      <select id="wifi" name="wifi">
+        <option value="">-- Wybierz --</option>
+        <option value="tak">Tak</option>
+        <option value="nie">Nie</option>
+      </select>
+      <label for="projector">Projektor:</label>
+      <select id="projector" name="projector">
+        <option value="">-- Wybierz --</option>
+        <option value="tak">Tak</option>
+        <option value="nie">Nie</option>
+      </select>
+      <label for="date">Data rezerwacji:</label>
+      <input type="date" id="date" name="date" />
+      <label for="start_time">Godzina rozpoczęcia rezerwacji:</label>
+      <input type="time" id="start_time" name="start_time" />
+      <label for="end_time">Godzina zakończenia rezerwacji:</label>
+      <input type="time" id="end_time" name="end_time" />
+      <button type="submit">Filtruj</button>
+    </form>
 
     Our rooms: 
     <br>
