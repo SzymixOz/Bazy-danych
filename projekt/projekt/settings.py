@@ -133,3 +133,4 @@ STATICFILES_DIRS = [
 
 
 # radek asdfqrwe1234
+# reservationsystem8 AsdfQwer!234

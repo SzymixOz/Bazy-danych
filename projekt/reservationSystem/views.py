@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from reservationSystem.models import Room, Reservation
+from django.contrib.auth.models import User
 
 from .models import Room
 
@@ -51,7 +52,7 @@ def home(request):
     if max_capacity:
         room_list = room_list.filter(capacity__lte=max_capacity)
     if wifi:
-        room_list = room_list.filter(wifi=(wifi == 'tak'))
+        room_list = room_list.filter(WiFi=(wifi == 'tak'))
     if projector:
         room_list = room_list.filter(projector=(projector == 'tak'))
     if date and start_time and end_time:
@@ -74,5 +75,9 @@ def room(request, roomId):
         return home(request)
     return render(request, 'room.html', {'room': room})
 
+def adminPanel(request):
+    return render(request, 'adminPanel.html')
+
 def handler404(request, exception):
     return render(request, '404.html')
+
