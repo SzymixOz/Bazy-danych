@@ -28,6 +28,16 @@ class ReservationForm(ModelForm):
             'comment': forms.Textarea(attrs={'rows': 2, 'cols': 50}),
             'email_adress': forms.EmailInput(attrs={'type': 'email'}),
         }
+
+class RoomForm(ModelForm):
+    class Meta:
+        model = Room
+        fields = ['name', 'capacity', 'projector', 'WiFi', 'description']
+        widgets = {
+            'name': forms.TextInput(attrs={'type': 'text'}),
+            'capacity': forms.NumberInput(attrs={'type': 'number'}),
+            'description': forms.Textarea(attrs={'rows': 2, 'cols': 50}),
+        }
         
 
 

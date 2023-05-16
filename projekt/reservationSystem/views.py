@@ -125,6 +125,23 @@ def succesfullReservation(request):
 def adminPanel(request):
     return render(request, 'adminPanel.html')
 
+def rooms(request):
+    rooms = Room.objects.all()
+    context = {
+        'room_list': rooms,
+    }
+    return render(request, 'rooms.html', context)
+
+def roomAdmin(request, roomId):
+    try:
+        room = Room.objects.get(id=roomId)
+    except Room.DoesNotExist:
+        return redirect('rooms')
+    context = {
+        'room': room,
+    }
+    return render(request, 'roomAdmin.html', context)
+
 def handle_404(request, exception):
     return render(request, '404.html', status=404)
 
