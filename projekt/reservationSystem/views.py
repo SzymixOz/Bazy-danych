@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
+from .forms import ReservationFilterForm, ReservationForm
 from reservationSystem.models import Room, Reservation
 from django.contrib.auth.models import User
 
@@ -37,47 +38,93 @@ def logout_view(request):
 
 
 def home(request):
-    min_capacity = request.GET.get('min_capacity')
-    max_capacity = request.GET.get('max_capacity')
-    wifi = request.GET.get('wifi')
-    projector = request.GET.get('projector')
-    date = request.GET.get('date')
-    start_time = request.GET.get('start_time')
-    end_time = request.GET.get('end_time')
+    room_list = []
+    form = ReservationFilterForm(request.POST)
+    if request.method == 'POST':
+        if form.is_valid():
+            room_list = Room.objects.all()
+            date = request.POST['date']
+            request.session['date'] = date
+            start_time = request.POST['start_time']
+            request.session['start_time'] = start_time
+            end_time = request.POST['end_time']
+            request.session['end_time'] = end_time
+            wifi = request.POST.get('wifi', None)
+            projector = request.POST.get('projector', None)
+            min_capacity = request.POST['min_capacity']
+            max_capacity = request.POST['max_capacity']
+            if min_capacity == '':
+                min_capacity = 0
+            if max_capacity == '':
+                max_capacity = 10**10
+            room_list = Room.objects.filter(capacity__gte=min_capacity, capacity__lte=max_capacity)
+            if wifi != '':
+                if wifi == 'True':
+                    wifi = True
+                else:
+                    wifi = False
+                room_list = room_list.filter(WiFi=wifi)
+            if projector != '':
+                if projector == 'True':
+                    projector = True
+                else:
+                    projector = False
+                room_list = room_list.filter(projector=projector)
+            if date:
+                room_list = room_list.exclude(reservation__date=date)
+            if start_time:
+                room_list = room_list.exclude(reservation__start_time__lte=start_time, reservation__end_time__gte=start_time)
+            if end_time:
+                room_list = room_list.exclude(reservation__start_time__lte=end_time, reservation__end_time__gte=end_time)
+            if start_time and end_time:
+                room_list = room_list.exclude(reservation__start_time__gte=start_time, reservation__end_time__lte=end_time)
 
-    room_list = Room.objects.all()
 
-    if min_capacity:
-        room_list = room_list.filter(capacity__gte=min_capacity)
-    if max_capacity:
-        room_list = room_list.filter(capacity__lte=max_capacity)
-    if wifi:
-        room_list = room_list.filter(WiFi=(wifi == 'tak'))
-    if projector:
-        room_list = room_list.filter(projector=(projector == 'tak'))
-    if date and start_time and end_time:
-        reservations = Reservation.objects.filter(
-            date=date,
-            start_time__lt=end_time,
-            end_time__gt=start_time
-        ).values_list('room_id', flat=True)
-        room_list = room_list.exclude(id__in=reservations)
-    return render(request, 'home.html',
-                  {'room_list': room_list})
+        
+    context = {
+        'room_list': room_list,
+        'form': form,
+    }
+    return render(request, 'home.html', context)
 
 def AddReservation(request):
     return render(request, 'add_reservation.html')
 
 def room(request, roomId):
+    if not request.user.is_authenticated:
+        return redirect('login')
     try:
         room = Room.objects.get(id=roomId)
     except Room.DoesNotExist:
         return home(request)
-    return render(request, 'room.html', {'room': room})
+    date = request.session.get('date', None)
+    start_time = request.session.get('start_time', None)
+    end_time = request.session.get('end_time', None)
+    form = ReservationForm(request.POST or None, initial={'date': date, 'start_time': start_time, 'end_time': end_time})
+    if request.method == 'POST':
+        if form.is_valid():
+            date = request.POST['date']
+            print(date, type(date))
+            start_time = request.POST['start_time']
+            end_time = request.POST['end_time']
+            comment = request.POST['comment']
+            email_adress = request.POST['email_adress']
+            user = request.user
+            reservation = Reservation.objects.create(date=date, start_time=start_time, end_time=end_time, comment=comment, email_adress=email_adress, room=room, user=user)
+            reservation.save()
+            return redirect('succesfullReservation')
+    context = {
+        'room': room,
+        'form': form,
+    }
+    return render(request, 'room.html', context)
+
+def succesfullReservation(request):
+    return render(request, 'succesfullReservation.html')
 
 def adminPanel(request):
     return render(request, 'adminPanel.html')
 
-def handler404(request, exception):
-    return render(request, '404.html')
+def handle_404(request, exception):
+    return render(request, '404.html', status=404)
 

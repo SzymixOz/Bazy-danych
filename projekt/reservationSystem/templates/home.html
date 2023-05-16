@@ -1,32 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <form method="GET" action="">
-      <label for="min_capacity">Minimalna liczba osób:</label>
-      <input type="number" id="min_capacity" name="min_capacity" />
-  
-      <label for="max_capacity">Maksymalna liczba osób:</label>
-      <input type="number" id="max_capacity" name="max_capacity" />
-  
-      <label for="wifi">WiFi:</label>
-      <select id="Wifi" name="Wifi">
-        <option value="">-- Wybierz --</option>
-        <option value="tak">Tak</option>
-        <option value="nie">Nie</option>
-      </select>
-      <label for="projector">Projektor:</label>
-      <select id="projector" name="projector">
-        <option value="">-- Wybierz --</option>
-        <option value="tak">Tak</option>
-        <option value="nie">Nie</option>
-      </select>
-      <label for="date">Data rezerwacji:</label>
-      <input type="date" id="date" name="date" />
-      <label for="start_time">Godzina rozpoczęcia rezerwacji:</label>
-      <input type="time" id="start_time" name="start_time" />
-      <label for="end_time">Godzina zakończenia rezerwacji:</label>
-      <input type="time" id="end_time" name="end_time" />
-      <button type="submit">Filtruj</button>
+    <form action="" method="POST" class="formsik">
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="form-inline">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+          </div>
+        {% endfor %}
+        <input type="submit" value="Rezerwuj" class="btn btn-secondary">
     </form>
     Our rooms: 
     <br>
@@ -40,7 +23,7 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">Max ilość osób: {{room.capacity}}</li>
           <li class="list-group-item">Projektor: {% if room.projector %}Dostępne{% else %}Brak{% endif %}</li>
-          <li class="list-group-item">Wifi: {% if room.projector %}Dostępne{% else %}Niedostępne{% endif %}</li>
+          <li class="list-group-item">Wifi: {% if room.Wifi %}Dostępne{% else %}Niedostępne{% endif %}</li>
         </ul>
         {{room.id}}
         <div class="card-body">
@@ -50,6 +33,7 @@
       </div>
     {% endfor %}
 {% endblock %}
+
 
 
 

@@ -6,7 +6,6 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.admin.views.decorators import staff_member_required
 
-handler404 = 'django.views.defaults.page_not_found'
 
 def staff_check(user):
     return user.is_staff
@@ -21,7 +20,13 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('register/', views.register_view, name='register'),
     path('room/<int:roomId>', views.room, name='room'),
-    path('AddReservation/', views.AddReservation, name='AddReservation'),
+    path('succesfullReservation/', views.succesfullReservation, name='succesfullReservation'),
     path('adminPanel/', admin_panel_view, name='adminPanel'),
+    # path('adminPanel/rooms/', views.rooms, name='rooms'),
+    # path('adminPanel/rooms/<int:roomId>', views.room, name='room'),
+    # path('adminPanel/reservations/', views.reservations, name='reservations'),
+    # path('adminPanel/reservations/<int:reservationId>', views.reservation, name='reservation'),
     path('', views.home, name='home'),
 ]
+
+handler404 = views.handle_404
