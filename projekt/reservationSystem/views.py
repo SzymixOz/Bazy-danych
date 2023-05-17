@@ -1,3 +1,5 @@
+import datetime
+from time import sleep
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -5,6 +7,7 @@ from django.contrib.auth.forms import UserCreationForm
 from .forms import ReservationFilterForm, ReservationForm
 from reservationSystem.models import Room, Reservation
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 from .models import Room
 
@@ -44,15 +47,24 @@ def home(request):
         if form.is_valid():
             room_list = Room.objects.all()
             date = request.POST['date']
+            if date < str(datetime.date.today()) and date != '':
+                messages.error(request, 'Nie można zarezerwować pokoju w przeszłości.')
+                return render(request, 'home.html', {'form': form})
             request.session['date'] = date
             start_time = request.POST['start_time']
             request.session['start_time'] = start_time
             end_time = request.POST['end_time']
+            if start_time >= end_time and start_time != '' and end_time != '':
+                messages.error(request, 'Godzina rozpoczęcia musi być wcześniejsza od godziny zakończenia.')
+                return render(request, 'home.html', {'form': form})
             request.session['end_time'] = end_time
             wifi = request.POST.get('wifi', None)
             projector = request.POST.get('projector', None)
             min_capacity = request.POST['min_capacity']
             max_capacity = request.POST['max_capacity']
+            if min_capacity != '' and min_capacity != '' and (int(min_capacity) < 0 or int(max_capacity) < 0):
+                messages.error(request, 'Pojemność sali nie może być ujemna.')
+                return render(request, 'home.html', {'form': form})
             if min_capacity == '':
                 min_capacity = 0
             if max_capacity == '':
@@ -73,14 +85,11 @@ def home(request):
             if date:
                 room_list = room_list.exclude(reservation__date=date)
             if start_time:
-                room_list = room_list.exclude(reservation__start_time__lte=start_time, reservation__end_time__gte=start_time)
+                room_list = room_list.exclude(reservation__start_time__lte=start_time, reservation__end_time__gte=start_time, reservation__date=date)
             if end_time:
-                room_list = room_list.exclude(reservation__start_time__lte=end_time, reservation__end_time__gte=end_time)
+                room_list = room_list.exclude(reservation__start_time__lte=end_time, reservation__end_time__gte=end_time, reservation__date=date)
             if start_time and end_time:
-                room_list = room_list.exclude(reservation__start_time__gte=start_time, reservation__end_time__lte=end_time)
-
-
-        
+                room_list = room_list.exclude(reservation__start_time__gte=start_time, reservation__end_time__lte=end_time, reservation__date=date)
     context = {
         'room_list': room_list,
         'form': form,
@@ -101,23 +110,44 @@ def room(request, roomId):
     start_time = request.session.get('start_time', None)
     end_time = request.session.get('end_time', None)
     form = ReservationForm(request.POST or None, initial={'date': date, 'start_time': start_time, 'end_time': end_time})
-    if request.method == 'POST':
-        if form.is_valid():
-            date = request.POST['date']
-            print(date, type(date))
-            start_time = request.POST['start_time']
-            end_time = request.POST['end_time']
-            comment = request.POST['comment']
-            email_adress = request.POST['email_adress']
-            user = request.user
-            reservation = Reservation.objects.create(date=date, start_time=start_time, end_time=end_time, comment=comment, email_adress=email_adress, room=room, user=user)
-            reservation.save()
-            return redirect('succesfullReservation')
     context = {
         'room': room,
         'form': form,
     }
+    if request.method == 'POST':
+        if form.is_valid():
+            date = request.POST['date']
+            if date < str(datetime.date.today()):
+                messages.error(request, 'Nie można zarezerwować pokoju w przeszłości.')
+                return render(request, 'room.html', context)
+            start_time = request.POST['start_time']
+            end_time = request.POST['end_time']
+            if start_time >= end_time:
+                messages.error(request, 'Godzina rozpoczęcia musi być wcześniejsza od godziny zakończenia.')
+                return render(request, 'room.html', context)
+            comment = request.POST['comment']
+            email_adress = request.POST['email_adress']
+            user = request.user
+            if not checkroom(room, date, start_time, end_time):
+                messages.error(request, 'Pokój jest już zarezerwowany w tym terminie.')
+            else:
+                reservation = Reservation.objects.create(date=date, start_time=start_time, end_time=end_time, comment=comment, email_adress=email_adress, room=room, user=user)
+                reservation.save()
+                return redirect('succesfullReservation')
     return render(request, 'room.html', context)
+
+def checkroom(room, date, start_time, end_time):
+    reservations = Reservation.objects.filter(room=room, date=date)
+    reservations = reservations.filter(
+    Q(start_time__lte=start_time, end_time__gte=start_time) |
+    Q(start_time__lte=end_time, end_time__gte=end_time) |
+    Q(start_time__gte=start_time, end_time__lte=end_time) |
+    Q(start_time__lte=start_time, end_time__gte=end_time)
+    )   
+    if reservations:
+        return False
+    return True
+
 
 def succesfullReservation(request):
     return render(request, 'succesfullReservation.html')

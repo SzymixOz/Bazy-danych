@@ -131,6 +131,5 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-
+# admin admin123
 # radek asdfqrwe1234
-# reservationsystem8 AsdfQwer!234

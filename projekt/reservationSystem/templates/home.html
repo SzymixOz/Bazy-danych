@@ -9,9 +9,25 @@
             {{ field }}
           </div>
         {% endfor %}
-        <input type="submit" value="Rezerwuj" class="btn btn-secondary">
+        <input type="submit" value="Szukaj Sali" class="btn btn-secondary">
     </form>
-    Our rooms: 
+    {% if messages %}
+      {% for message in messages %}
+          <div class="alert alert-danger" role="alert">
+              {{ message }}
+          </div>
+      {% endfor %}
+    {% endif %}
+    {% if room_list|length == 1 %}
+      <div class="alert alert-success" role="alert">
+          Znaleziono jedną sale spełniającą podane kryteria
+      </div>
+    {% endif %}
+    {% if room_list|length > 1 %}
+      <div class="alert alert-success" role="alert">
+          Znaleziono  sale spełniające podane kryteria
+      </div>
+    {% endif %}
     <br>
     {% for room in room_list %}
     <div class="card" style="width: 18rem;">
@@ -31,6 +47,11 @@
         </div>
       </div>
     {% endfor %}
+    {% if room_list|length == 0 %}
+    <div class="alert alert-danger" role="alert">
+        Brak sali spełniającej podane kryteria
+    </div>
+    {% endif %}
 {% endblock %}
 
 

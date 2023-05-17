@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="container">Room {{room.id}}</div>
-    
+
     <form action="" method="POST" class="formsik">
         {% csrf_token %}
         {% for field in form %}
@@ -11,16 +11,15 @@
             {{ field }}
           </div>
         {% endfor %}
-        <input type="submit" value="Filtruj" class="btn btn-secondary">
+        <input type="submit" value="Rezerwuj" class="btn btn-secondary">
     </form>
 
-    <br>
-    {{date}}
-    <br>
-    {{start_time}}
-    <br>
-    {{end_time}}
-    <br>
-    Add reservation form here
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-danger" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% endif %}
 
 {% endblock %}
