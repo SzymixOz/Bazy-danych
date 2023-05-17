@@ -31,13 +31,18 @@ class ReservationForm(ModelForm):
 
 class RoomForm(ModelForm):
     class Meta:
+        CHOICES = [
+            (None, '---------'),
+            (True, 'Tak'),
+            (False, 'Nie'),
+        ]
         model = Room
         fields = ['name', 'capacity', 'WiFi', 'projector', 'description']
         widgets = {
             'name': forms.TextInput(attrs={'type': 'text'},),
             'capacity': forms.NumberInput(attrs={'type': 'number'}),
-            'WiFi': forms.CheckboxInput(attrs={'type': 'checkbox'}),
-            'projector': forms.CheckboxInput(attrs={'type': 'checkbox'}),
+            'WiFi': forms.Select(choices=CHOICES),
+            'projector': forms.Select(choices=CHOICES),
             'description': forms.Textarea(attrs={'rows': 2, 'cols': 50}),
         }
 

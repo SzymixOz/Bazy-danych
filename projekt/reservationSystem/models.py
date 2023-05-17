@@ -8,6 +8,8 @@ class Room(models.Model):
     projector = models.BooleanField(default=False)
     WiFi = models.BooleanField(default=False)
     description = models.TextField(blank=True)
+    expiry_date = models.DateField(null=True, blank=True)
+    
 
     def __str__(self):
         return self.name

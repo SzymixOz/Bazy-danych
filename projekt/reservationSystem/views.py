@@ -171,7 +171,7 @@ def addRoom(request):
             WiFi = request.POST.get('WiFi', None)
             projector = request.POST.get('projector', None)
             description = request.POST['description']
-            room = Room.objects.create(name=name, capacity=capacity, WiFi=WiFi, projector=projector, description=description)
+            room = Room.objects.create(name=name, capacity=capacity, WiFi=WiFi, projector=projector, description=description, expiry_date=None)
             room.save()
             return redirect('rooms')
     context = {
@@ -193,16 +193,24 @@ def roomAdmin(request, roomId):
             WiFi = request.POST.get('WiFi', None)
             projector = request.POST.get('projector', None)
             description = request.POST['description']
-            room = Room.objects.create(name=name, capacity=capacity, WiFi=WiFi, projector=projector, description=description)
+            new_room = Room.objects.create(name=name, capacity=capacity, WiFi=WiFi, projector=projector, description=description, expiry_date=None)
+            new_room.save()
+            room.expiry_date = datetime.date.today() + datetime.timedelta(days=60)
             room.save()
             return redirect('rooms')
     context = {
         'form': form,
     }
-    # context = {
-    #     'room': room,
-    # }
     return render(request, 'roomAdmin.html', context)
+
+def delete_room(request, roomId):
+    try:
+        room = Room.objects.get(id=roomId)
+    except Room.DoesNotExist:
+        return redirect('rooms')
+    
+    room.delete()
+    return redirect('rooms')
 
 def handle_404(request, exception):
     return render(request, '404.html', status=404)
