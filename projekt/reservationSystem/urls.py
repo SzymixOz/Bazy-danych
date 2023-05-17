@@ -23,6 +23,7 @@ urlpatterns = [
     path('succesfullReservation/', views.succesfullReservation, name='succesfullReservation'),
     path('adminPanel/', admin_panel_view, name='adminPanel'),
     path('adminPanel/rooms/', views.rooms, name='rooms'),
+    path('adminPanel/addRoom/', views.addRoom, name='addRoom'),
     path('adminPanel/roomAdmin/<int:roomId>', views.roomAdmin, name='roomAdmin'),
     # path('adminPanel/reservations/', views.reservations, name='reservations'),
     # path('adminPanel/reservations/<int:reservationId>', views.reservation, name='reservation'),

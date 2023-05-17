@@ -1,9 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <a href="{% url 'addRoom' %}" class="btn btn-primary">Dodaj nowy pokój</a>
+    <h1>Lista pokoi</h1>
+    
     {% for room in room_list %}
     <div class="card" style="width: 18rem;">
-        <img src="..." class="card-img-top" alt="...">
+        <!-- <img src="..." class="card-img-top" alt="..."> -->
         <div class="card-body">
         <h5 class="card-title">{{room.name}}</h5>
         <p class="card-text">{{room.description}}</p>
@@ -13,9 +16,9 @@
         <li class="list-group-item">Projektor: {% if room.projector %}Dostępne{% else %}Brak{% endif %}</li>
         <li class="list-group-item">Wifi: {% if room.Wifi %}Dostępne{% else %}Niedostępne{% endif %}</li>
         </ul>
-        {{room.id}}
         <div class="card-body">
-        <a href="{% url 'roomAdmin' room.id %}" class="card-link">Zmiana pokoju/usunięcie</a>
+        <a href="{% url 'roomAdmin' room.id %}" class="btn btn-secondary">Edytuj pokój</a>
+        <a class="btn btn-danger">Usuń pokój</a>
         </div>
     </div>
     {% endfor %}
