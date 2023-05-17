@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
-from .forms import ReservationFilterForm, ReservationForm
+from .forms import ReservationFilterForm, ReservationForm, RoomForm
 from reservationSystem.models import Room, Reservation
 from django.contrib.auth.models import User
 from django.db.models import Q
@@ -162,15 +162,55 @@ def rooms(request):
     }
     return render(request, 'rooms.html', context)
 
+def addRoom(request):
+    form = RoomForm(request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            name = request.POST['name']
+            capacity = request.POST['capacity']
+            WiFi = request.POST.get('WiFi', None)
+            projector = request.POST.get('projector', None)
+            description = request.POST['description']
+            room = Room.objects.create(name=name, capacity=capacity, WiFi=WiFi, projector=projector, description=description, expiry_date=None)
+            room.save()
+            return redirect('rooms')
+    context = {
+        'form': form,
+    }
+    return render(request, 'addRoom.html', context)
+
 def roomAdmin(request, roomId):
     try:
         room = Room.objects.get(id=roomId)
     except Room.DoesNotExist:
         return redirect('rooms')
+    
+    form = RoomForm(request.POST or None, initial={'name': room.name, 'capacity': room.capacity, 'WiFi': room.WiFi, 'projector': room.projector, 'description': room.description})
+    if request.method == 'POST':
+        if form.is_valid():
+            name = request.POST['name']
+            capacity = request.POST['capacity']
+            WiFi = request.POST.get('WiFi', None)
+            projector = request.POST.get('projector', None)
+            description = request.POST['description']
+            new_room = Room.objects.create(name=name, capacity=capacity, WiFi=WiFi, projector=projector, description=description, expiry_date=None)
+            new_room.save()
+            room.expiry_date = datetime.date.today() + datetime.timedelta(days=60)
+            room.save()
+            return redirect('rooms')
     context = {
-        'room': room,
+        'form': form,
     }
     return render(request, 'roomAdmin.html', context)
+
+def delete_room(request, roomId):
+    try:
+        room = Room.objects.get(id=roomId)
+    except Room.DoesNotExist:
+        return redirect('rooms')
+    
+    room.delete()
+    return redirect('rooms')
 
 def handle_404(request, exception):
     return render(request, '404.html', status=404)

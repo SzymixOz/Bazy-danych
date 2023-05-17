@@ -31,13 +31,32 @@ class ReservationForm(ModelForm):
 
 class RoomForm(ModelForm):
     class Meta:
+        CHOICES = [
+            (None, '---------'),
+            (True, 'Tak'),
+            (False, 'Nie'),
+        ]
         model = Room
-        fields = ['name', 'capacity', 'projector', 'WiFi', 'description']
+        fields = ['name', 'capacity', 'WiFi', 'projector', 'description']
         widgets = {
-            'name': forms.TextInput(attrs={'type': 'text'}),
+            'name': forms.TextInput(attrs={'type': 'text'},),
             'capacity': forms.NumberInput(attrs={'type': 'number'}),
+            'WiFi': forms.Select(choices=CHOICES),
+            'projector': forms.Select(choices=CHOICES),
             'description': forms.Textarea(attrs={'rows': 2, 'cols': 50}),
         }
+
+        # def clean(self):
+        #     cleaned_data = super().clean()
+        #     name = cleaned_data.get('name')
+        #     capacity = cleaned_data.get('capacity')
+        #     WiFi = cleaned_data.get('WiFi')
+        #     projector = cleaned_data.get('projector')
+
+        #     if not name or not capacity or WiFi is None or projector is None:
+        #         raise forms.ValidationError("Wszystkie pola są wymagane.")
+
+        #     return cleaned_data
         
 
 
