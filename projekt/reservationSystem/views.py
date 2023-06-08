@@ -44,8 +44,8 @@ def home(request):
     room_list = []
     form = ReservationFilterForm(request.POST)
     if request.method == 'POST':
+        query = Q()
         if form.is_valid():
-            room_list = Room.objects.all()
             date = request.POST['date']
             if date < str(datetime.date.today()) and date != '':
                 messages.error(request, 'Nie można zarezerwować pokoju w przeszłości.')
@@ -69,27 +69,31 @@ def home(request):
                 min_capacity = 0
             if max_capacity == '':
                 max_capacity = 10**10
-            room_list = Room.objects.filter(capacity__gte=min_capacity, capacity__lte=max_capacity)
-            if wifi != '':
+            
+            if min_capacity:
+                query &= Q(capacity__gte=min_capacity)
+            if max_capacity:
+                query &= Q(capacity__lte=max_capacity)
+            if wifi:
                 if wifi == 'True':
-                    wifi = True
+                    query &= Q(WiFi=True)
                 else:
-                    wifi = False
-                room_list = room_list.filter(WiFi=wifi)
-            if projector != '':
+                    query &= Q(WiFi=False)
+            if projector:
                 if projector == 'True':
-                    projector = True
+                    query &= Q(projector=True)
                 else:
-                    projector = False
-                room_list = room_list.filter(projector=projector)
+                    query &= Q(projector=False)
             if date:
-                room_list = room_list.exclude(reservation__date=date)
+                query &= ~Q(reservation__date=date)
             if start_time:
-                room_list = room_list.exclude(reservation__start_time__lte=start_time, reservation__end_time__gte=start_time, reservation__date=date)
+                query &= ~Q(reservation__start_time__lte=start_time, reservation__end_time__gte=start_time, reservation__date=date)
             if end_time:
-                room_list = room_list.exclude(reservation__start_time__lte=end_time, reservation__end_time__gte=end_time, reservation__date=date)
+                query &= ~Q(reservation__start_time__lte=end_time, reservation__end_time__gte=end_time, reservation__date=date)
             if start_time and end_time:
-                room_list = room_list.exclude(reservation__start_time__gte=start_time, reservation__end_time__lte=end_time, reservation__date=date)
+                query &= ~Q(reservation__start_time__gte=start_time, reservation__end_time__lte=end_time, reservation__date=date)
+            room_list = Room.objects.filter(query)
+
     context = {
         'room_list': room_list,
         'form': form,
