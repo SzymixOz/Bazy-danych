@@ -37,12 +37,13 @@ class RoomForm(ModelForm):
             (False, 'Nie'),
         ]
         model = Room
-        fields = ['name', 'capacity', 'WiFi', 'projector', 'description']
+        fields = ['name', 'description']
+        # fields = ['name', 'capacity', 'WiFi', 'projector', 'description']
         widgets = {
             'name': forms.TextInput(attrs={'type': 'text'},),
-            'capacity': forms.NumberInput(attrs={'type': 'number'}),
-            'WiFi': forms.Select(choices=CHOICES),
-            'projector': forms.Select(choices=CHOICES),
+            # 'capacity': forms.NumberInput(attrs={'type': 'number'}),
+            # 'WiFi': forms.Select(choices=CHOICES),
+            # 'projector': forms.Select(choices=CHOICES),
             'description': forms.Textarea(attrs={'rows': 2, 'cols': 50}),
         }
 

@@ -133,3 +133,4 @@ STATICFILES_DIRS = [
 
 # admin admin123
 # radek asdfqrwe1234
+# Szymon ********
