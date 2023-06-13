@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="container">Room {{room.id}}</div>
+    <div class="container">{{room.name}}</div>
 
     <form action="" method="POST" class="formsik">
         {% csrf_token %}
