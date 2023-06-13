@@ -1,6 +1,7 @@
+from django.db import models
 from django import forms
 from django.forms import ModelForm, Form
-from .models import Reservation, Room
+from .models import Reservation, Room, Equipment
 
 class ReservationFilterForm(Form):
     CHOICES = [
@@ -29,6 +30,17 @@ class ReservationForm(ModelForm):
             'email_adress': forms.EmailInput(attrs={'type': 'email'}),
         }
 
+
+class RoomAndEquipment(models.Model):
+    start_date = models.DateField()
+    end_date = models.DateField()
+    description = models.CharField(max_length=100)
+    capacity = models.IntegerField()
+    name = models.CharField(max_length=100)
+    WiFi = models.BooleanField()
+    computers = models.BooleanField()
+    projector = models.BooleanField()
+
 class RoomForm(ModelForm):
     class Meta:
         CHOICES = [
@@ -36,14 +48,17 @@ class RoomForm(ModelForm):
             (True, 'Tak'),
             (False, 'Nie'),
         ]
-        model = Room
-        fields = ['name', 'capacity', 'WiFi', 'projector', 'description']
+        model = RoomAndEquipment
+        fields = ['name', 'capacity', 'WiFi', 'projector', 'computers', 'description', 'start_date', 'end_date']
         widgets = {
             'name': forms.TextInput(attrs={'type': 'text'},),
             'capacity': forms.NumberInput(attrs={'type': 'number'}),
             'WiFi': forms.Select(choices=CHOICES),
             'projector': forms.Select(choices=CHOICES),
+            'computers': forms.Select(choices=CHOICES),
             'description': forms.Textarea(attrs={'rows': 2, 'cols': 50}),
+            'start_date': forms.DateInput(attrs={'type': 'date'}),
+            'end_date': forms.DateInput(attrs={'type': 'date'}),
         }
 
         # def clean(self):

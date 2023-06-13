@@ -9,7 +9,7 @@ from reservationSystem.models import Room, Reservation
 from django.contrib.auth.models import User
 from django.db.models import Q
 
-from .models import Room
+from .models import Equipment, Room
 
 def register_view(request):
     if request.method == 'POST':
@@ -160,7 +160,7 @@ def adminPanel(request):
     return render(request, 'adminPanel.html')
 
 def rooms(request):
-    rooms = Room.objects.all()
+    rooms = Equipment.objects.all()
     context = {
         'room_list': rooms,
     }
@@ -174,9 +174,15 @@ def addRoom(request):
             capacity = request.POST['capacity']
             WiFi = request.POST.get('WiFi', None)
             projector = request.POST.get('projector', None)
+            computers = request.POST.get('computers', None)
             description = request.POST['description']
-            room = Room.objects.create(name=name, capacity=capacity, WiFi=WiFi, projector=projector, description=description, expiry_date=None)
+            start_date = request.POST['start_date']
+            end_date = request.POST['end_date']
+            room = Room.objects.create(name=name, description=description)
+            equipment = Equipment.objects.create(room=room, capacity=capacity, WiFi=WiFi, projector=projector,
+                                                computers=computers, start_date=start_date, end_date=end_date)
             room.save()
+            equipment.save()
             return redirect('rooms')
     context = {
         'form': form,
@@ -185,11 +191,12 @@ def addRoom(request):
 
 def roomAdmin(request, roomId):
     try:
-        room = Room.objects.get(id=roomId)
+        room = Equipment.objects.filter(room=roomId)
     except Room.DoesNotExist:
         return redirect('rooms')
-    
-    form = RoomForm(request.POST or None, initial={'name': room.name, 'capacity': room.capacity, 'WiFi': room.WiFi, 'projector': room.projector, 'description': room.description})
+   
+    form = RoomForm(request.POST or None)#, initial={'name': room.name, 'capacity': room.capacity, 'WiFi': room.WiFi, 'projector': room.projector,
+                                          #         'computers': room.computers, 'description': room.description, 'start_date': room.start_date, 'end_date': room.end_date})
     if request.method == 'POST':
         if form.is_valid():
             name = request.POST['name']

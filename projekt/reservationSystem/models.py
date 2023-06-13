@@ -4,22 +4,27 @@ from django.contrib.auth.models import User
 
 class Room(models.Model):
     name = models.CharField('Room name' ,max_length=255)
+    description = models.TextField(blank=True)
+    
+    def __str__(self):
+        return self.name
+
+class Equipment(models.Model):
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
     capacity = models.IntegerField('Capacity')
     projector = models.BooleanField(default=False)
     WiFi = models.BooleanField(default=False)
-    description = models.TextField(blank=True)
-    expiry_date = models.DateField(null=True, blank=True)
+    computers = models.BooleanField(default=False)
+    start_date = models.DateField(null=False, blank=True)
+    end_date = models.DateField(null=False, blank=True)
     
-
-    def __str__(self):
-        return self.name
     
 class Reservation(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+    user = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=None)
     date = models.DateField()
     start_time = models.TimeField()
     end_time = models.TimeField()
-    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    room = models.ForeignKey(Room, on_delete=models.DO_NOTHING)
     comment = models.TextField(blank=True)
     email_adress = models.EmailField('Email adress')
 
