@@ -41,6 +41,7 @@ class RoomAndEquipment(models.Model):
     computers = models.BooleanField()
     projector = models.BooleanField()
 
+
 class RoomForm(ModelForm):
     class Meta:
         CHOICES = [

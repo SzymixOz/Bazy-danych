@@ -37,11 +37,10 @@
           <p class="card-text">{{room.description}}</p>
         </div>
         <ul class="list-group list-group-flush">
-            <li class="list-group-item">Max ilość osób: {{room.capacity}}</li>
-          <li class="list-group-item">Projektor: {% if room.projector %}Dostępne{% else %}Brak{% endif %}</li>
-          <li class="list-group-item">Wifi: {% if room.WiFi %}Dostępne{% else %}Niedostępne{% endif %}</li>
+            <li class="list-group-item">Max ilość osób: {{room.equipment__capacity}}</li>
+          <li class="list-group-item">Projektor: {% if room.equipment__projector %}Dostępne{% else %}Brak{% endif %}</li>
+          <li class="list-group-item">Wifi: {% if room.equipment__WiFi %}Dostępne{% else %}Niedostępne{% endif %}</li>
         </ul>
-        {{room.id}}
         <div class="card-body">
           <a href="{% url 'room' room.id %}" class="card-link">Card link</a>
         </div>
