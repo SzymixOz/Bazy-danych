@@ -18,6 +18,7 @@ class Equipment(models.Model):
     start_date = models.DateField(null=False, blank=True)
     end_date = models.DateField(null=False, blank=True)
     
+    
 class Reservation(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=None)
     date = models.DateField()
