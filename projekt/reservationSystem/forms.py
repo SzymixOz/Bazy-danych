@@ -39,7 +39,5 @@ class RoomForm(ModelForm):
             'description': forms.Textarea(attrs={'rows': 2, 'cols': 50}),
         }
         
-
-
-
-
+class DeleteForm(forms.Form):
+    delete_button = forms.CharField(widget=forms.HiddenInput())

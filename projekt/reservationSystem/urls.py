@@ -21,6 +21,7 @@ urlpatterns = [
     path('register/', views.register_view, name='register'),
     path('room/<int:roomId>', views.room, name='room'),
     path('succesfullReservation/', views.succesfullReservation, name='succesfullReservation'),
+    path('succesfullDelated/', views.succesfullDelated, name='succesfullDelated'),
     path('adminPanel/', admin_panel_view, name='adminPanel'),
     path('adminPanel/rooms/', views.rooms, name='rooms'),
     path('adminPanel/roomAdmin/<int:roomId>', views.roomAdmin, name='roomAdmin'),
