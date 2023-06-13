@@ -17,7 +17,3 @@
 
 ## Edycja oraz usunięcie rezerwacji 
 ![obraz](https://github.com/SzymixOz/Bazy-danych/assets/84770801/b2a9275f-3644-4a82-91a1-12db928dbdcc)
-
-
-## Link
-### https://github.com/SzymixOz/Bazy-danych
