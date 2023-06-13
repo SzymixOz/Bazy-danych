@@ -1,5 +1,4 @@
 ## Authors
-<a href="doc:introduction" target="_blank">Introduction</a>
 ### Szymon Ożóg - szymonozog@student.agh.edu.pl
 ### <a href="https://github.com/wiksat">Wiktor Satora</a> - satora@student.agh.edu.pl
 ### Radosław Niżnik - rniznik@student.agh.edu.pl
