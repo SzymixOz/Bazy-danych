@@ -163,6 +163,24 @@ def rooms(request):
     }
     return render(request, 'rooms.html', context)
 
+def reservations(request):
+    reservations = Reservation.objects.all()
+    context = {
+        'reservations_list': reservations,
+    }
+    return render(request, 'reservations.html', context)
+
+def reservation(request, reservationId):
+    try:
+        reservation = Reservation.objects.get(id=reservationId)
+    except Reservation.DoesNotExist:
+        return redirect('reservations')
+    context = {
+        'reservation': reservation,
+    }
+    return render(request, 'reservation.html', context)
+
+
 def roomAdmin(request, roomId):
     try:
         room = Room.objects.get(id=roomId)

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% for reservation in reservations_list %}
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+        <h5 class="card-title">{{reservation.room}}</h5>
+        <p class="card-text">{{reservation.comment}}</p>
+        </div>
+        <ul class="list-group list-group-flush">
+        <li class="list-group-item">User: {{reservation.user}}</li>
+        <li class="list-group-item">date: {{reservation.date}}</li>
+        <li class="list-group-item">start_time: {{reservation.start_time}}</li>
+        <li class="list-group-item">end_time: {{reservation.end_time}}</li>
+        <li class="list-group-item">room: {{reservation.room}}</li>
+        <li class="list-group-item">comment: {{reservation.comment}}</li>
+        <li class="list-group-item">email_adress: {{reservation.email_adress}}</li>
+        <li class="list-group-item"></li>
+        </ul>
+        <div class="card-body">
+            <a href="{% url 'reservation' reservation.id %}" class="card-link">edit</a>
+
+        </div>
+    </div>
+
+    {% endfor %}
+{% endblock %}
