@@ -72,19 +72,19 @@ def home(request):
                 max_capacity = 10**10
             
             if min_capacity:
-                query &= Q(capacity__gte=min_capacity)
+                query &= Q(equipment__capacity__gte=min_capacity)
             if max_capacity:
-                query &= Q(capacity__lte=max_capacity)
+                query &= Q(equipment__capacity__lte=max_capacity)
             if wifi:
                 if wifi == 'True':
-                    query &= Q(WiFi=True)
+                    query &= Q(equipment__WiFi=True)
                 else:
-                    query &= Q(WiFi=False)
+                    query &= Q(equipment__WiFi=False)
             if projector:
                 if projector == 'True':
-                    query &= Q(projector=True)
+                    query &= Q(equipment__projector=True)
                 else:
-                    query &= Q(projector=False)
+                    query &= Q(equipment__projector=False)
             if date:
                 query &= ~Q(reservation__date=date)
             if start_time:
@@ -93,7 +93,8 @@ def home(request):
                 query &= ~Q(reservation__start_time__lte=end_time, reservation__end_time__gte=end_time, reservation__date=date)
             if start_time and end_time:
                 query &= ~Q(reservation__start_time__gte=start_time, reservation__end_time__lte=end_time, reservation__date=date)
-            room_list = Room.objects.filter(query)
+            room_list = Room.objects.filter(query).values('name', 'description', 'equipment__capacity', 'equipment__projector', 'equipment__WiFi', 'equipment__computers', 'equipment__start_date', 'equipment__end_date', 'id')
+    print(room_list)
 
     context = {
         'room_list': room_list,
