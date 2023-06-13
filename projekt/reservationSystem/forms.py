@@ -73,7 +73,5 @@ class RoomForm(ModelForm):
 
         #     return cleaned_data
         
-
-
-
-
+class DeleteForm(forms.Form):
+    delete_button = forms.CharField(widget=forms.HiddenInput())

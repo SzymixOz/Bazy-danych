@@ -36,6 +36,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
+    print('logout')
     return redirect('login')
 
 
@@ -152,9 +153,23 @@ def checkroom(room, date, start_time, end_time):
         return False
     return True
 
+def checkroom2(room, date, start_time, end_time, reservation_id):
+    reservations = Reservation.objects.filter(room=room, date=date).exclude(id=reservation_id)
+    reservations = reservations.filter(
+        Q(start_time__lte=start_time, end_time__gte=start_time) |
+        Q(start_time__lte=end_time, end_time__gte=end_time) |
+        Q(start_time__gte=start_time, end_time__lte=end_time) |
+        Q(start_time__lte=start_time, end_time__gte=end_time)
+    )
+    if reservations:
+        return False
+    return True
 
 def succesfullReservation(request):
     return render(request, 'succesfullReservation.html')
+
+def succesfullDelated(request):
+    return render(request, 'succesfullDelated.html')
 
 def adminPanel(request):
     return render(request, 'adminPanel.html')
@@ -165,6 +180,55 @@ def rooms(request):
         'room_list': rooms,
     }
     return render(request, 'rooms.html', context)
+
+def reservations(request):
+    reservations = Reservation.objects.all()
+    context = {
+        'reservations_list': reservations,
+    }
+    return render(request, 'reservations.html', context)
+
+def reservation(request, reservationId):
+    try:
+        reservation = Reservation.objects.get(id=reservationId)
+    except Reservation.DoesNotExist:
+        return redirect('reservations')
+
+    form = ReservationForm(request.POST or None, initial={'date': reservation.date, 'start_time': reservation.start_time, 'end_time': reservation.end_time, "comment": reservation.comment, "email_adress": reservation.email_adress})
+
+    context = {
+        'form': form,
+        'reservation': reservation,
+    }
+
+    if request.method == 'POST':
+        if 'delete_button' in request.POST:
+            reservation.delete()
+            return redirect('succesfullDelated')
+        date = request.POST['date']
+        start_time = request.POST['start_time']
+        end_time = request.POST['end_time']
+        if start_time >= end_time:
+            messages.error(request, 'Godzina rozpoczęcia musi być wcześniejsza od godziny zakończenia.')
+            return render(request, 'room.html', context)
+        comment = request.POST['comment']
+        email_adress = request.POST['email_adress']
+        # user = request.user
+        if not checkroom2(reservation.room.id, date, start_time, end_time, reservation.id):
+            messages.error(request, 'Pokój jest już zarezerwowany w tym terminie.')
+        else:
+            reservation.date = date
+            reservation.start_time = start_time
+            reservation.end_time = end_time
+            reservation.comment = comment
+            reservation.email_adress = email_adress
+            reservation.save()
+            return redirect('succesfullReservation')
+
+    return render(request, 'reservation.html', context)
+
+
+
 
 def addRoom(request):
     form = RoomForm(request.POST or None)

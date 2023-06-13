@@ -15,4 +15,7 @@
 .container{
     font-size: 32px;
     color: red;
-};
+}
+.card{
+    margin-bottom: 20px;
+}
