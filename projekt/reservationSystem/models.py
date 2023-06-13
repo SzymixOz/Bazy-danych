@@ -10,7 +10,7 @@ class Room(models.Model):
         return self.name
 
 class Equipment(models.Model):
-    room = models.ForeignKey(Room, on_delete=models.DO_NOTHING)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
     capacity = models.IntegerField('Capacity')
     projector = models.BooleanField(default=False)
     WiFi = models.BooleanField(default=False)

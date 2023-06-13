@@ -191,11 +191,12 @@ def addRoom(request):
 
 def roomAdmin(request, roomId):
     try:
-        room = Room.objects.get(id=roomId)
+        room = Equipment.objects.filter(room=roomId)
     except Room.DoesNotExist:
         return redirect('rooms')
-    
-    form = RoomForm(request.POST or None, initial={'name': room.name, 'capacity': room.capacity, 'WiFi': room.WiFi, 'projector': room.projector, 'description': room.description})
+   
+    form = RoomForm(request.POST or None)#, initial={'name': room.name, 'capacity': room.capacity, 'WiFi': room.WiFi, 'projector': room.projector,
+                                          #         'computers': room.computers, 'description': room.description, 'start_date': room.start_date, 'end_date': room.end_date})
     if request.method == 'POST':
         if form.is_valid():
             name = request.POST['name']
