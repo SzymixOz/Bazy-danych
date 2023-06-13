@@ -213,7 +213,6 @@ def reservation(request, reservationId):
             return render(request, 'room.html', context)
         comment = request.POST['comment']
         email_adress = request.POST['email_adress']
-        # user = request.user
         if not checkroom2(reservation.room.id, date, start_time, end_time, reservation.id):
             messages.error(request, 'Pokój jest już zarezerwowany w tym terminie.')
         else:
