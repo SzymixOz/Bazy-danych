@@ -16,8 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.shortcuts import render, redirect
+
+def red(request):
+    return redirect('/reservationSystem/')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', red, name='reservationSystem'),
     path('reservationSystem/', include('reservationSystem.urls')),
 ]

@@ -15,8 +15,14 @@
         <li class="list-group-item">Email address: {{reservation.email_adress}}</li>
         </ul>
         <div class="card-body">
-            <a href="{% url 'reservation' reservation.id %}" class="btn btn-secondary">Edytuj rezerwację</a>
+            <a href="{% url 'reservation' reservation.id %}" class="btn btn-primary">Edytuj rezerwację</a>
+            <form method="POST" action="" class="formDel">
+                {% csrf_token %}
+                <input type="hidden" name="reservation_id" value="{{ reservation.id }}">
+                <input type="submit" class="btn btn-danger" name="delete_button" value="Usuń rezerwację">
+              </form>
         </div>
+        
     </div>
 
     {% endfor %}

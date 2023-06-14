@@ -204,6 +204,13 @@ def reservations(request):
     context = {
         'reservations_list': reservations,
     }
+    if request.method == 'POST':
+        if 'delete_button' in request.POST:
+            reservation_id = request.POST.get('reservation_id')
+            print(reservation_id)
+            reservation = Reservation.objects.get(id=reservation_id)
+            reservation.delete()
+            return redirect('reservations')
     return render(request, 'reservations.html', context)
 
 def reservation(request, reservationId):

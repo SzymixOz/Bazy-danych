@@ -30,5 +30,8 @@
 ## Zapytanie pozwalające filtrować nasze pokoje, a następnie wyświetlanie ich na stronie głónej.
 ![image](https://github.com/SzymixOz/Bazy-danych/assets/93473651/347727ff-4838-41bd-9d15-ae9a7fdb2f4b)
 
+## Pobranie wszystkich rezerwacji
+![obraz](https://github.com/SzymixOz/Bazy-danych/assets/84770801/bf4e4915-a2d1-4ff0-8a51-187b55a317ef)
+
 ## Edycja oraz usunięcie rezerwacji 
 ![obraz](https://github.com/SzymixOz/Bazy-danych/assets/84770801/b2a9275f-3644-4a82-91a1-12db928dbdcc)
