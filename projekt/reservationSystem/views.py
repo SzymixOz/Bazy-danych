@@ -61,6 +61,7 @@ def home(request):
             request.session['end_time'] = end_time
             wifi = request.POST.get('wifi', None)
             projector = request.POST.get('projector', None)
+            computers = request.POST.get('computers', None)
             min_capacity = request.POST['min_capacity']
             max_capacity = request.POST['max_capacity']
             if min_capacity != '' and min_capacity != '' and (int(min_capacity) < 0 or int(max_capacity) < 0):
@@ -85,6 +86,11 @@ def home(request):
                     query &= Q(equipment__projector=True)
                 else:
                     query &= Q(equipment__projector=False)
+            if computers:
+                if computers == 'True':
+                    query &= Q(equipment__computers=True)
+                else:
+                    query &= Q(equipment__computers=False)
             if date:
                 query &= ~Q(reservation__date=date)
             if start_time:

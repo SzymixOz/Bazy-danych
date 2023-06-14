@@ -14,6 +14,7 @@ class ReservationFilterForm(Form):
     end_time = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time'}), required=False)
     wifi = forms.CharField(widget=forms.Select(choices=CHOICES), required=False)
     projector = forms.CharField(widget=forms.Select(choices=CHOICES), required=False)
+    computers = forms.CharField(widget=forms.Select(choices=CHOICES), required=False)
     min_capacity = forms.IntegerField(widget=forms.NumberInput(attrs={'type': 'number'}), required=False)
     max_capacity = forms.IntegerField(widget=forms.NumberInput(attrs={'type': 'number'}), required=False)
 
