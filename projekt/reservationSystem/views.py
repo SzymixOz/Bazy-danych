@@ -4,22 +4,39 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
-from .forms import ReservationFilterForm, ReservationForm, RoomForm
+from .forms import RegistrationForm, ReservationFilterForm, ReservationForm, RoomForm
 from reservationSystem.models import Room, Reservation
 from django.contrib.auth.models import User
 from django.db.models import Q
-
 from .models import Equipment, Room
+
+# def register_view(request):
+#     if request.method == 'POST':
+#         form = UserCreationForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, 'Rejestracja zakończona sukcesem. Możesz się teraz zalogować.')
+#             return redirect('login')
+#     else:
+#         form = UserCreationForm()
+#     return render(request, 'register.html', {'form': form})
 
 def register_view(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = RegistrationForm(request.POST)
         if form.is_valid():
-            form.save()
+            username = form.cleaned_data['username']
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password1']
+            # Tworzenie nowego użytkownika
+            user = form.save(commit=False)
+            user.email = email
+            user.save()
             messages.success(request, 'Rejestracja zakończona sukcesem. Możesz się teraz zalogować.')
-            return redirect('login')
+            return redirect('login')  
     else:
-        form = UserCreationForm()
+        form = RegistrationForm()
+
     return render(request, 'register.html', {'form': form})
 
 
@@ -124,7 +141,8 @@ def room(request, roomId):
     date = request.session.get('date', None)
     start_time = request.session.get('start_time', None)
     end_time = request.session.get('end_time', None)
-    form = ReservationForm(request.POST or None, initial={'date': date, 'start_time': start_time, 'end_time': end_time})
+    email = request.user.email
+    form = ReservationForm(request.POST or None, initial={'date': date, 'start_time': start_time, 'end_time': end_time, 'email_adress': email})
     context = {
         'room': room,
         'form': form,
@@ -237,9 +255,6 @@ def reservation(request, reservationId):
             messages.error(request, 'Godzina rozpoczęcia musi być wcześniejsza od godziny zakończenia.')
             return render(request, 'room.html', context)
         comment = request.POST['comment']
-        # wczytaj email z atrybutów user
-        # user = request.user
-        # email_adress = user.email
         email_adress = request.POST['email_adress']
         if not checkroom2(reservation.room.id, date, start_time, end_time, reservation.id):
             messages.error(request, 'Pokój jest już zarezerwowany w tym terminie.')
