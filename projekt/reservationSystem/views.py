@@ -250,12 +250,21 @@ def addRoom(request):
         if form.is_valid():
             name = request.POST['name']
             capacity = request.POST['capacity']
+            if int(capacity) <= 0:
+                messages.error(request, 'Pojemność musi być większa od 0.')
+                return render(request, 'addRoom.html', {'form': form})
             WiFi = request.POST.get('WiFi', None)
             projector = request.POST.get('projector', None)
             computers = request.POST.get('computers', None)
+            if WiFi is None or projector is None or computers is None:
+                messages.error(request, 'Musisz wybrać jedną z opcji Tak/Nie.')
+                return render(request, 'addRoom.html', {'form': form})
             description = request.POST['description']
             start_date = request.POST['start_date']
             end_date = request.POST['end_date']
+            if start_date >= end_date:
+                messages.error(request, 'Data rozpoczęcia musi być wcześniejsza od daty zakończenia.')
+                return render(request, 'addRoom.html', {'form': form})
             room = Room.objects.create(name=name, description=description)
             equipment = Equipment.objects.create(room=room, capacity=capacity, WiFi=WiFi, projector=projector,
                                                 computers=computers, start_date=start_date, end_date=end_date)
@@ -301,14 +310,12 @@ def editRoom(request, roomId):
 def delete_room(request, roomId):
     try:
         room = Room.objects.get(id=roomId)
-        print("PPPPP", roomId, room)
     except Room.DoesNotExist:
         return redirect('rooms')
     
-    # usuń wszystkie equipment, które są przypisane do pokoju
-    equipment = Equipment.objects.filter(room=room)
-    for e in equipment:
-        e.delete()
+    # equipment = Equipment.objects.filter(room=room)
+    # for e in equipment:
+    #     e.delete()
     room.delete()
     return redirect('rooms')
 

@@ -24,7 +24,7 @@ class Reservation(models.Model):
     date = models.DateField()
     start_time = models.TimeField()
     end_time = models.TimeField()
-    room = models.ForeignKey(Room, on_delete=models.DO_NOTHING)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
     comment = models.TextField(blank=True)
     email_adress = models.EmailField('Email adress')
 
