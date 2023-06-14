@@ -22,6 +22,7 @@ def register_view(request):
         form = UserCreationForm()
     return render(request, 'register.html', {'form': form})
 
+
 def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -91,8 +92,10 @@ def home(request):
                     query &= Q(equipment__computers=True)
                 else:
                     query &= Q(equipment__computers=False)
+            # if date:
+            #     query &= ~Q(reservation__date=date)
             if date:
-                query &= ~Q(reservation__date=date)
+                query &= Q(equipment__start_date__lte=date, equipment__end_date__gte=date)
             if start_time:
                 query &= ~Q(reservation__start_time__lte=start_time, reservation__end_time__gte=start_time, reservation__date=date)
             if end_time:
@@ -227,6 +230,9 @@ def reservation(request, reservationId):
             messages.error(request, 'Godzina rozpoczęcia musi być wcześniejsza od godziny zakończenia.')
             return render(request, 'room.html', context)
         comment = request.POST['comment']
+        # wczytaj email z atrybutów user
+        # user = request.user
+        # email_adress = user.email
         email_adress = request.POST['email_adress']
         if not checkroom2(reservation.room.id, date, start_time, end_time, reservation.id):
             messages.error(request, 'Pokój jest już zarezerwowany w tym terminie.')

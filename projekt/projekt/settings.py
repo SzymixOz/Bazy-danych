@@ -131,6 +131,14 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
+# AUTHENTICATION_BACKENDS = [
+#     'django.contrib.auth.backends.ModelBackend',
+# ]
+
+# ACCOUNT_AUTHENTICATION_METHOD = 'email'
+# ACCOUNT_EMAIL_REQUIRED = True
+# ACCOUNT_USERNAME_REQUIRED = True
+
 # admin admin123
 # radek asdfqrwe1234
 # Szymon ********
