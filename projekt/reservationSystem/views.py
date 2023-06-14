@@ -256,7 +256,7 @@ def addRoom(request):
             WiFi = request.POST.get('WiFi', None)
             projector = request.POST.get('projector', None)
             computers = request.POST.get('computers', None)
-            if WiFi is None or projector is None or computers is None:
+            if WiFi == "" or projector == "" or computers == "":
                 messages.error(request, 'Musisz wybrać jedną z opcji Tak/Nie.')
                 return render(request, 'addRoom.html', {'form': form})
             description = request.POST['description']
@@ -288,12 +288,21 @@ def editRoom(request, roomId):
         if form.is_valid():
             name = request.POST['name']
             capacity = request.POST['capacity']
+            if int(capacity) <= 0:
+                messages.error(request, 'Pojemność musi być większa od 0.')
+                return render(request, 'editRoom.html', {'form': form})
             WiFi = request.POST.get('WiFi', None)
             projector = request.POST.get('projector', None)
             computers = request.POST.get('computers', None)
+            if WiFi == "" or projector == "" or computers == "":
+                messages.error(request, 'Musisz wybrać jedną z opcji Tak/Nie.')
+                return render(request, 'editRoom.html', {'form': form})
             description = request.POST['description']
             start_date = request.POST['start_date']
             end_date = request.POST['end_date']
+            if start_date >= end_date:
+                messages.error(request, 'Data rozpoczęcia musi być wcześniejsza od daty zakończenia.')
+                return render(request, 'editRoom.html', {'form': form})
             room = Room.objects.get(id=roomId)
             room.name = name
             room.description = description
