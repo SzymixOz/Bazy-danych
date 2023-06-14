@@ -182,11 +182,19 @@ def adminPanel(request):
     return render(request, 'adminPanel.html')
 
 def rooms(request):
-    rooms = Equipment.objects.all()
+    rooms = Room.objects.all()
     context = {
         'room_list': rooms,
     }
     return render(request, 'rooms.html', context)
+
+def roomDetails(request, roomId):
+    equipments = Equipment.objects.filter(room=roomId)
+    context = {
+        'equipment_list': equipments,
+        'roomId': roomId,
+    }
+    return render(request, 'roomDetails.html', context)
 
 def reservations(request):
     reservations = Reservation.objects.all()
@@ -259,11 +267,11 @@ def addRoom(request):
     }
     return render(request, 'addRoom.html', context)
 
-def roomAdmin(request, roomId):
-    try:
-        room = Equipment.objects.filter(room=roomId)
-    except Room.DoesNotExist:
-        return redirect('rooms')
+def editRoom(request, roomId):
+    # try:
+    #     room = Equipment.objects.filter(room=roomId)
+    # except Room.DoesNotExist:
+    #     return redirect('rooms')
    
     form = RoomForm(request.POST or None)#, initial={'name': room.name, 'capacity': room.capacity, 'WiFi': room.WiFi, 'projector': room.projector,
                                           #         'computers': room.computers, 'description': room.description, 'start_date': room.start_date, 'end_date': room.end_date})
@@ -288,15 +296,23 @@ def roomAdmin(request, roomId):
     context = {
         'form': form,
     }
-    return render(request, 'roomAdmin.html', context)
+    return render(request, 'editRoom.html', context)
 
 def delete_room(request, roomId):
     try:
         room = Room.objects.get(id=roomId)
+        print("PPPPP", roomId, room)
     except Room.DoesNotExist:
         return redirect('rooms')
     
-    room.delete()
+    # usuń wszystkie equipment, które są przypisane do pokoju
+    equipment = Equipment.objects.filter(room=room)
+    print(room)
+    for e in equipment:
+        print(e)
+        e.delete()
+    # room.delete()
+    print("usunięto pokój")
     return redirect('rooms')
 
 def handle_404(request, exception):
