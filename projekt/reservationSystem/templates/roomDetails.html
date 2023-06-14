@@ -20,7 +20,7 @@
         <li class="list-group-item">End date: {{equipment.end_date}}</li>
         </ul>
         <div class="card-body">  
-            <!-- <a href="{% url 'deleteRoom' equipment.room.id %}" class="btn btn-danger">Usuń wyposażenie</a> -->
+            <a href="{% url 'deleteEquipment' equipment.id %}" class="btn btn-danger">Usuń wyposażenie</a>
         </div>
     </div>    
     {% endfor %}

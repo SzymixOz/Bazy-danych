@@ -28,6 +28,7 @@ urlpatterns = [
     path('adminPanel/roomDetails/<int:roomId>', views.roomDetails, name='roomDetails'),
     path('adminPanel/editRoom/<int:roomId>', views.editRoom, name='editRoom'),
     path('adminPanel/deleteRoom/<int:roomId>', views.delete_room, name='deleteRoom'),
+    path('adminPanel/deleteEquipment/<int:equipmentId>', views.deleteEquipment, name='deleteEquipment'),
     path('adminPanel/reservations/', views.reservations, name='reservations'),
     path('adminPanel/reservations/<int:reservationId>', views.reservation, name='reservation'),
     path('', views.home, name='home'),

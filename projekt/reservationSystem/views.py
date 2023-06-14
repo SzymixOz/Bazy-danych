@@ -64,7 +64,7 @@ def home(request):
             computers = request.POST.get('computers', None)
             min_capacity = request.POST['min_capacity']
             max_capacity = request.POST['max_capacity']
-            if min_capacity != '' and min_capacity != '' and (int(min_capacity) < 0 or int(max_capacity) < 0):
+            if min_capacity != '' and max_capacity != '' and (int(min_capacity) < 0 or int(max_capacity) < 0):
                 messages.error(request, 'Pojemność sali nie może być ujemna.')
                 return render(request, 'home.html', {'form': form})
             if min_capacity == '':
@@ -307,13 +307,19 @@ def delete_room(request, roomId):
     
     # usuń wszystkie equipment, które są przypisane do pokoju
     equipment = Equipment.objects.filter(room=room)
-    print(room)
     for e in equipment:
-        print(e)
         e.delete()
-    # room.delete()
-    print("usunięto pokój")
+    room.delete()
     return redirect('rooms')
+
+def deleteEquipment(request, equipmentId):
+    try:
+        equipment = Equipment.objects.get(id=equipmentId)
+        roomId = equipment.room.id
+    except Equipment.DoesNotExist:
+        return redirect('rooms')
+    equipment.delete()
+    return redirect('roomDetails', roomId)
 
 def handle_404(request, exception):
     return render(request, '404.html', status=404)
