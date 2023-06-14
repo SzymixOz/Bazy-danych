@@ -267,11 +267,17 @@ def roomAdmin(request, roomId):
             capacity = request.POST['capacity']
             WiFi = request.POST.get('WiFi', None)
             projector = request.POST.get('projector', None)
+            computers = request.POST.get('computers', None)
             description = request.POST['description']
-            new_room = Room.objects.create(name=name, capacity=capacity, WiFi=WiFi, projector=projector, description=description, expiry_date=None)
-            new_room.save()
-            room.expiry_date = datetime.date.today() + datetime.timedelta(days=60)
+            start_date = request.POST['start_date']
+            end_date = request.POST['end_date']
+            room = Room.objects.get(id=roomId)
+            room.name = name
+            room.description = description
+            equipment = Equipment.objects.create(room=room, capacity=capacity, WiFi=WiFi, projector=projector,
+                                                  computers=computers, start_date=start_date, end_date=end_date)
             room.save()
+            equipment.save()
             return redirect('rooms')
     context = {
         'form': form,
