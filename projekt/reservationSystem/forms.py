@@ -19,7 +19,7 @@ class ReservationFilterForm(Form):
         (True, 'Tak'),
         (False, 'Nie'),
     ]
-    date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), required=False)
+    date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), required=True)
     start_time = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time'}), required=False)
     end_time = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time'}), required=False)
     wifi = forms.CharField(widget=forms.Select(choices=CHOICES), required=False)
